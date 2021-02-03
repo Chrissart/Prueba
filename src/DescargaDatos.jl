@@ -9,7 +9,7 @@ export descargar_datos
 global_logger(TerminalLogger(right_justify=120))
 
 #Modulo para descomprimir archivos de python
-zipfile = pyimport("zipfile")
+zipfile = pushfirst!(PyVector(pyimport("sys")."path"), "zipfile")
 
 struct Descargable
             path::String
