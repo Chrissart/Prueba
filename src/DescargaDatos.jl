@@ -9,6 +9,7 @@ export descargar_datos
 global_logger(TerminalLogger(right_justify=120))
 
 #Modulo para descomprimir archivos de python
+zipfile = pushfirst!(PyVector(pyimport("sys")."path"), "zipfile")
 
 struct Descargable
             path::String
@@ -49,8 +50,6 @@ end
 #Descomprime archivo, regresa la direccion del archivo
 #unzip(ARCHIVO_COMPRIMIDO, DIRECCION_DESCOMPRIMIR)
 function unzip(rar,pathS="")
-    Pkg.build("PyCall")
-    zipfile = pushfirst!(PyVector(pyimport("sys")."path"), "zipfile")
     local pathC = ""
     rzip = zipfile.ZipFile(rar)
     for i in rzip.namelist()
