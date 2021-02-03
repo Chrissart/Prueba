@@ -3,7 +3,7 @@
 include("AvocadoIT.jl")
 
 #AvocadoIT.instalacion()
-AvocadoIT.descargar_datos("D:\\Julia\\Programas","24-09-2020")
+AvocadoIT.descargar_datos("C:\\Users\\chris\\Desktop","24-09-2020")
 
 include("AvocadoIT.jl")
 dataFrames = AvocadoIT.framesDatos("D:\\Julia\\Programas\\Descargables\\Defunciones\\def_edad_proyecciones_n.csv",
