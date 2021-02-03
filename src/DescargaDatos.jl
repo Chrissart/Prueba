@@ -9,7 +9,6 @@ export descargar_datos
 global_logger(TerminalLogger(right_justify=120))
 
 #Modulo para descomprimir archivos de python
-zipfile = pushfirst!(PyVector(pyimport("sys")."path"), "zipfile")
 
 struct Descargable
             path::String
@@ -50,18 +49,20 @@ end
 #Descomprime archivo, regresa la direccion del archivo
 #unzip(ARCHIVO_COMPRIMIDO, DIRECCION_DESCOMPRIMIR)
 function unzip(rar,pathS="")
-            local pathC = ""
-            rzip = zipfile.ZipFile(rar)
-            for i in rzip.namelist()
-                path = joinpath(pathS,i)
-                if isempty(pathC)
-                        pathC = path
-                end
-                rzip.extract(i, pathS)
-            end
-            rzip.close()
-            rm(rar, force=true, recursive=true)
-            return pathC
+    Pkg.build("PyCall")
+    zipfile = pushfirst!(PyVector(pyimport("sys")."path"), "zipfile")
+    local pathC = ""
+    rzip = zipfile.ZipFile(rar)
+    for i in rzip.namelist()
+        path = joinpath(pathS,i)
+        if isempty(pathC)
+            pathC = path
+        end
+        rzip.extract(i, pathS)
+    end
+    rzip.close()
+    rm(rar, force=true, recursive=true)
+    return pathC
 end
 
 covidActual = "http://datosabiertos.salud.gob.mx/gobmx/salud/datos_abiertos/datos_abiertos_covid19.zip"
