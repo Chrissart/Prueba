@@ -8,11 +8,6 @@ export descargar_datos
 #Barra de progreso
 global_logger(TerminalLogger(right_justify=120))
 
-#Modulo para descomprimir archivos de python
-#zipfile = pyimport("zipfile")
-include("AvocadoIT.jl")
-import AvocadoIT:unzip(rar,pathS="")
-
 
 struct Descargable
             path::String
@@ -69,6 +64,24 @@ function unzip(rar,pathS="")
 end
 =#
 
+function unzip(file,exdir="")
+    fileFullPath = isabspath(file) ?  file : joinpath(pwd(),file)
+    basePath = dirname(fileFullPath)
+    outPath = (exdir == "" ? basePath : (isabspath(exdir) ? exdir : joinpath(pwd(),exdir)))
+    isdir(outPath) ? "" : mkdir(outPath)
+    zarchive = ZipFile.Reader(fileFullPath)
+    for f in zarchive.files
+        fullFilePath = joinpath(outPath,f.name)
+        if (endswith(f.name,"/") || endswith(f.name,"\\"))
+            mkdir(fullFilePath)
+        else
+            write(fullFilePath, read(f))
+        end
+    end
+    close(zarchive)
+    return fileFullPath
+end
+
 covidActual = "http://datosabiertos.salud.gob.mx/gobmx/salud/datos_abiertos/datos_abiertos_covid19.zip"
 #Descarga archivo covid, regresa la dirrecion del archivo
 #descargar_covid(DIRECCION,FECHA), si no se especifica DIRECCION el archivo se guarda en la carpeta actual, si no se especifica FECHA se obtienen los datos mas actualizados
@@ -105,7 +118,7 @@ function descargar_coneval(path="",f="")
             rm(pathC, force=true, recursive=true)
             mkdir(pathC)
             rar = HTTP.download(conevalLink, pathC)
-            return Descargable(unzip(rar, pathC),f)
+            #return Descargable(unzip(rar, pathC),f)
 end
 
 #Datos intensidad migratoria por municipios, 2010
@@ -176,5 +189,5 @@ function descargar_datos(path="",f="")
             tres = descargar_im(pathC,f)
             cuatro = descargar_defunciones(pathC,f)
             cinco = descargar_natalidad(pathC,f)
-            return Descargados(uno, dos, tres, cuatro ,cinco)
+            #return Descargados(uno, dos, tres, cuatro ,cinco)
 end
